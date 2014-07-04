@@ -7,16 +7,16 @@ using namespace std;
 #define GENERATE(id, listName, typeName, funName) \
   namespace {                                     \
     const int listName = id;                      \
-    A* obj_##funName = new A(id, funName);        \
+    Factory* obj_##funName = new Factory(id, funName);        \
   }                                               \
 
 class Manager;
-class A {
+class Factory {
 public:
   typedef bool (*CreateFunction)(int id, vector<int>& v);
-  A(int id, CreateFunction cf);
+  Factory(int id, CreateFunction cf);
   void print() {
-    cout << "A print: " << id_ << endl;
+    cout << "Factory print: " << id_ << endl;
   }
   bool create(int id, vector<int>& v) {
     if (createFun_) {
@@ -44,7 +44,7 @@ private:
     obj_ = NULL;
   }
   static Manager* obj_;
-  map<int, A*> fs_;
+  map<int, Factory*> fs_;
 
 public:
   static Manager& instance() {
@@ -54,7 +54,7 @@ public:
     return *obj_;
   }
 
-  void add(int id, A* a) {
+  void add(int id, Factory* a) {
     if (a != NULL && fs_.insert(make_pair(a->id(), a)).second) {
       cout << "Manager::add id[" << a->id() << "] success!" << endl;
     } else {
@@ -62,7 +62,7 @@ public:
     }
   }
 
-  A* get(int id) {
+  Factory* get(int id) {
     if (fs_.find(id) != fs_.end()) {
       return fs_.find(id)->second;
     }
@@ -72,8 +72,8 @@ public:
 };
 Manager* Manager::obj_ = NULL;
 
-A::A(int id, CreateFunction cf): id_(id), createFun_(cf) {
-  cout << "A gen: " << id_ << endl;
+Factory::Factory(int id, CreateFunction cf): id_(id), createFun_(cf) {
+  cout << "Factory gen: " << id_ << endl;
   Manager::instance().add(id_, this);
 }
 
@@ -103,14 +103,18 @@ void print(const vector<int>& v) {
   }
   cout << endl;
 }
+
 int main(void) {
-  A* a = Manager::instance().get(1);
+  Factory* f = NULL;
   vector<int> v;
-  a->create(1, v);
+
+  f = Manager::instance().get(LIST_FRIEND);
+  f && f->create(LIST_FRIEND, v);
   print(v);
 
-  a = Manager::instance().get(2);
-  a->create(1, v);
+  f = Manager::instance().get(LIST_PAGE);
+  f && f->create(LIST_PAGE, v);
   print(v);
+
   return 0;
 }
