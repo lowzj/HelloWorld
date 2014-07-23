@@ -4,11 +4,11 @@
 
 using namespace std;
 
-#define GENERATE(id, listName, typeName, funName) \
-  namespace {                                     \
-    const int listName = id;                      \
-    Factory* obj_##funName = new Factory(id, funName);        \
-  }                                               \
+#define GENERATE(id, listName, typeName, funName)     \
+  namespace {                                         \
+    const int listName = id;                          \
+    Factory* obj_##funName = new Factory(id, funName);\
+  }                                                   \
 
 class Manager;
 class Factory {
@@ -54,9 +54,9 @@ public:
     return *obj_;
   }
 
-  void add(int id, Factory* a) {
-    if (a != NULL && fs_.insert(make_pair(a->id(), a)).second) {
-      cout << "Manager::add id[" << a->id() << "] success!" << endl;
+  void add(int id, Factory* f) {
+    if (f != NULL && fs_.insert(make_pair(f->id(), f)).second) {
+      cout << "Manager::add id[" << f->id() << "] success!" << endl;
     } else {
       cout << "Manager::add id[" << id << "] failed!" << endl;
     }
