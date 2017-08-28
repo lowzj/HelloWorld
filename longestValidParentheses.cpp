@@ -16,24 +16,17 @@ public:
         for (int i = 0; i < s.length(); ++i) {
             if (s[i] == ')') {
                 if (!st.empty()) {
-                    v[st.top()] = 1;
-                    v[i] = 1;
+                    v[st.top()] = v[i] = 1;
                     st.pop();
                 }
-            } else {
-                st.push(i);
-            }
+            } else st.push(i);
         }
         for (int i = 0; i < v.size(); ++i) {
-            cout << v[i];
             if (v[i]) {
-                cur += v[i];
+                cur++;
                 max = max > cur ? max : cur;
-            } else {
-                cur = 0;
-            }
+            } else cur = 0;
         }
-        cout << endl;
         return max;
     }
 };
