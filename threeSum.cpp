@@ -42,12 +42,10 @@ public:
             for (int j = i + 1; j < v.size(); ++j) {
                 int itr = biSearch(v, j + 1, 0-v[i]-v[j]);
                 if (itr != -1) {
-                    vector<int> tmp;
-                    tmp.push_back(v[i]), tmp.push_back(v[j]), tmp.push_back(v[itr]);
-                    long key = tmp[0] * max + tmp[1];
+                    long key = v[i] * max + v[j];
                     if (mark.find(key) == mark.end()) {
-                        res.push_back(tmp);
-                        mark.insert(tmp[0]*max+tmp[1]);
+                        res.push_back(vector<int>{v[i], v[j], v[itr]});
+                        mark.insert(key);
                     }
                 }
             }
@@ -57,10 +55,9 @@ public:
 };
 
 int main(void) {
-    int v[] = {-1, 0, 1, 2, -1, -4};
-    vector<int> vv(v, v+6);
+    vector<int> v{-1, 0, 1, 2, -1, -4};
     Solution s;
-    vector<vector<int> > vvv = s.threeSum(vv);
+    vector<vector<int> > vvv = s.threeSum(v);
     for (int i = 0; i < vvv.size(); ++i) {
         for (int j = 0; j < vvv[i].size(); ++j)
             cout << vvv[i][j] << " ";
