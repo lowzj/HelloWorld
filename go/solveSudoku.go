@@ -29,7 +29,6 @@ func solveSudoku(board [][]byte) {
 		clear(&c[v.j], v.t)
 		clear(&g[gi(v.i, v.j)], v.t)
 		board[v.i][v.j] = byte('0' + v.t)
-		print2(board)
 	}
 	release := func(v *value, t int) {
 		set(&r[v.i], v.t)
@@ -107,7 +106,6 @@ func initSet(n int, row, column, grid []int, board [][]byte) []*value {
 			}
 		}
 	}
-	print(row, column, grid, n)
 	return stack
 }
 
