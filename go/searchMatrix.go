@@ -3,7 +3,7 @@ package main
 import "fmt"
 
 func searchMatrix(matrix [][]int, target int) bool {
-	return searchMatrix2(matrix, target)
+	return searchMatrix3(matrix, target)
 }
 
 // https://leetcode-cn.com/problems/search-a-2d-matrix/
@@ -84,6 +84,30 @@ func searchMatrix2(matrix [][]int, target int) bool {
 	}
 
 	return find(0, n-1, 0, m-1)
+}
+
+func searchMatrix3(matrix [][]int, target int) bool {
+	n := len(matrix)
+	if n == 0 {
+		return false
+	}
+	m := len(matrix[0])
+	if m == 0 {
+		return false
+	}
+
+	for i, j := m-1, 0; i >= 0 && j < n; {
+		if matrix[i][j] == target {
+			return true
+		}
+		if matrix[i][j] > target {
+			i--
+		} else {
+			j++
+		}
+	}
+
+	return false
 }
 
 func main() {
