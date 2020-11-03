@@ -2,12 +2,6 @@ package main
 
 import "fmt"
 
-// Definition for singly-linked list.
-type ListNode struct {
-	Val  int
-	Next *ListNode
-}
-
 func reverseList(head *ListNode) *ListNode {
 	res := &ListNode{}
 	for p := head; p != nil; {
