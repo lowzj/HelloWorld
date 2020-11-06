@@ -46,12 +46,12 @@ func groupAnagrams(strs []string) [][]string {
 }
 
 // 质数乘积代替 toId
-var list = []int{2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101}
+var listId = []int{2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101}
 
 func helper(a string) int {
 	ret := 1
 	for i := 0; i < len(a); i++ {
-		ret *= list[int(a[i]-'a')]
+		ret *= listId[int(a[i]-'a')]
 	}
 	return ret
 }
