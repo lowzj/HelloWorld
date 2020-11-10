@@ -2,9 +2,10 @@ package main
 
 import "fmt"
 
+//------------------------------------------------------------------------------
+
 func main() {
 	cases := [][]int{
-		{},
 		{},
 	}
 
@@ -14,7 +15,4 @@ func main() {
 		// solve
 		fmt.Println(c)
 	}
-	a := 1000000007
-	fmt.Println(a)
-	fmt.Println((1143383095 * 15) % a)
 }

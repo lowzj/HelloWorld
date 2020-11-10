@@ -103,7 +103,7 @@ func nextPermutation(nums []int) {
 //	* 从右至左, 找到第一个正序对P[i][j,j+1], 使得P[i][j]<P[i][j+1]
 //	* 在P[i][j+1,..,n-1]中找到最小的逆序对P[i][j,k], 其中j<k<=n-1, P[i][j]<P[i][k]
 //	* 交换j,k数据, 使得P[i][j]>P[i][k], 同时P[i][j+1,n-1]为全逆序对
-//	* 为了RO[i]只增1, 即进位效果, 将 P[i][j+1,n-1] 发转成为全正序对
+//	* 为了RO[i]只增1, 即进位效果, 将 P[i][j+1,n-1] 反转成为全正序对
 //	* 如上便得到下一个排列 P[i+1]
 
 func nextPermutation2(nums []int) {
