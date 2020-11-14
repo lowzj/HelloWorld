@@ -1,6 +1,8 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
 // https://leetcode-cn.com/problems/super-egg-drop/
 
@@ -83,33 +85,18 @@ func superEggDrop00(K int, N int) int {
 }
 
 func superEggDrop01(K int, N int) int {
+	if N < 3 {
+		return N
+	}
+
 	max := func(x, y int) int {
 		if x > y {
 			return x
 		}
 		return y
 	}
-	if N < 3 {
-		return N
-	}
-	f := make([][]int, K+1)
-	for i := 0; i <= K; i++ {
-		f[i] = make([]int, N+1)
-	}
-	for i := 0; i <= N; i++ {
-		f[1][i] = i
-	}
-	for i := 0; i <= K; i++ {
-		f[i][1], f[i][2] = 1, 2
-	}
-
 	biSearch := func(f []int, l, r, target int) int {
-		for i := l; i <= r; i++ {
-			if f[i] > target {
-				return i - 1
-			}
-		}
-		for mid := (l + r) / 2; l < r; {
+		for mid := (l + r) / 2; l <= r; {
 			if f[mid] == target {
 				r = mid - 1
 			} else if f[mid] > target {
@@ -121,9 +108,18 @@ func superEggDrop01(K int, N int) int {
 		}
 		return l
 	}
+
+	f := make([][]int, K+1)
+	for i := 0; i <= K; i++ {
+		f[i] = make([]int, N+1)
+		f[i][1], f[i][2] = 1, 2
+	}
+	for i := 0; i <= N; i++ {
+		f[1][i] = i
+	}
 	for i := 2; i <= K; i++ {
 		for j := 2; j < N; j++ {
-			m := biSearch(f[i-1], 1, j, f[i-1][j]-1)
+			m := biSearch(f[i-1], 1, j, f[i][j])
 			f[i][j+1] = max(f[i-1][m-1], f[i][j+1-m]) + 1
 		}
 	}
@@ -183,6 +179,7 @@ func print2(f []int, idx int) {
 func main() {
 	cases := [][]int{
 		{4, 100},
+		{7, 10000},
 		{1, 2},
 		{2, 6},
 		{2, 9},
