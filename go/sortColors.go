@@ -25,7 +25,7 @@ func sortColors(nums []int) {
 // 终止条件: j <= k, 表示一趟扫描完成.
 // 算法复杂度
 //   * 时间: O(n)
-//   * 空间: O(1)
+//   * 空间: O(1), 3个变量.
 
 func sortColors1(nums []int) {
 	N := len(nums)
@@ -53,6 +53,9 @@ func sortColors1(nums []int) {
 //------------------------------------------------------------------------------
 // Solution 0
 // 计数统计再重写
+// 算法复杂度:
+//   * 时间: O(n)
+//   * 空间: O(1), 因为只需要3个变量分别表示0,1,2出现的次数.
 
 func sortColors0(nums []int) {
 	N := len(nums)
