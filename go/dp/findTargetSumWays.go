@@ -20,6 +20,10 @@ import (
 //   S = ABS(SUM(A)-2*SUM(A1))
 // 并且其中一个子数组是可以为空的, 即 SUM(A1) 可以为0.
 // 所以原问题就转化为: 找到 A 中的所有子数组 A1, 使等式 S==ABS(SUM(A)-2*SUM(A1)) 成立.
+//
+// 跟此题相似: https://leetcode-cn.com/problems/partition-equal-subset-sum/
+//
+// 步骤:
 //   1. 计算 SUM(A). 遍历一遍数组 A 即可.
 //   2. 统计所有子数组 A1 可能出现的和的组合数.
 //      * 令 f[k] 表示子数组的和为 k 的组合数, 初始 f[0] = 1.
