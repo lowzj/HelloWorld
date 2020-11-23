@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"sort"
 )
 
 // https://leetcode-cn.com/problems/target-sum/
@@ -24,7 +23,8 @@ import (
 //   1. 计算 SUM(A). 遍历一遍数组 A 即可.
 //   2. 统计所有子数组 A1 可能出现的和的组合数.
 //      * 令 f[k] 表示子数组的和为 k 的组合数, 初始 f[0] = 1.
-//      * 遍历原数组 A, 更新所有包含 A[i] 的和的组合数: f[k+A[i]] += f[k]
+//      * 遍历原数组 A, 更新所有包含 A[i] 的和的组合数: f[k] += f[k-A[i]].
+//        k 从大到小更新, 防止重复计算.
 //      * k 的范围: [0,SUM(A)]
 //   3. 遍历 f, 统计所有使等式成立的组合数. 为防止重复计算, 遍历范围: [0,SUM(A)/2].
 //      * 当 S == ABS(SUM(A)-2*f[i]) 为真, 则 res += f[i]
@@ -39,17 +39,12 @@ func findTargetSumWays(nums []int, S int) int {
 	for _, c := range nums {
 		sum += c
 	}
-	sort.Ints(nums)
-	f := make(map[int]int)
-	f[0] = 1
 
+	f := make([]int, sum+1)
+	f[0] = 1
 	for i := 0; i < N; i++ {
-		tmp := make(map[int]int)
-		for k, v := range f {
-			tmp[k+nums[i]] = v
-		}
-		for k, v := range tmp {
-			f[k] += v
+		for k := sum - nums[i]; k >= nums[i]; k-- {
+			f[k] += f[k-nums[i]]
 		}
 	}
 
