@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"math"
 	"sort"
 )
 
@@ -14,17 +15,58 @@ import (
 
 //------------------------------------------------------------------------------
 func containsNearbyAlmostDuplicate(nums []int, k int, t int) bool {
-	return containsNearbyAlmostDuplicate0(nums, k, t)
+	return containsNearbyAlmostDuplicate2(nums, k, t)
 }
 
 //------------------------------------------------------------------------------
 // Solution 2
 //
+// 桶排序 + 滑动窗口
+//
+// 将数组元素放入到桶中, 各个桶中元素的范围依次为: [0,t],[t+1,2t+1],[2t+2,3t+2],...
+// 那么该桶有如下性质:
+//   1. 同一个桶中的各个元素的差值的绝对值一定小于等于 t.
+//   2. 任意桶 i,j 中的元素 a, b, 若 |b-a|<=t 成立, 那么 |j-i\<=1, 即桶必须相邻.
+// 所以, 遍历数组 A, 对于元素 A[i]:
+//   *. 入窗口前, 计算 A[i] 落入的桶 i, 若桶 i 中已有元素, 则返回 true.
+//   *. 否则, 取左右相邻桶(i-1/i+1)中的元素, 计算差绝对值, 小于等于 t 则返回 true.
+//   *. 否则, 将 A[i] 加入桶中, 并将 A[i-k] 元素从桶中删除.
+// 每个桶中只需存储一个元素, 因为如若桶中不止1个元素, 根据性质1, 可直接返回true, 不用进入下一轮.
+// 因此桶可以用 map[int]int 表示, key 为桶号, value 为数组元素值.
+// 另外, 由于元素值范围: [-2^31,2^31-1], 可以映射到:[0,2^32-1], 保证计算的桶号为非负数.
+//
 // 复杂度分析:
 //   * 时间: O(N)
-//   * 空间: O(N)
+//   * 空间: O(k)
 func containsNearbyAlmostDuplicate2(nums []int, k int, t int) bool {
-	return containsNearbyAlmostDuplicate0(nums, k, t)
+	N := len(nums)
+	if N < 2 {
+		return false
+	}
+
+	abs := func(x int) int {
+		if x >= 0 {
+			return x
+		}
+		return -x
+	}
+	bkt := make(map[int64]int)
+	toId := func(x int) int64 {
+		return (int64(x) + math.MaxUint32) / (int64(t) + 1)
+	}
+	for i, v := range nums {
+		id := toId(v)
+		for j := id - 1; j <= id+1; j++ {
+			if p, ok := bkt[j]; ok && abs(p-v) <= t {
+				return true
+			}
+		}
+		bkt[id] = v
+		if i >= k {
+			delete(bkt, toId(nums[i-k]))
+		}
+	}
+	return false
 }
 
 //------------------------------------------------------------------------------
@@ -37,6 +79,7 @@ func containsNearbyAlmostDuplicate2(nums []int, k int, t int) bool {
 // 复杂度:
 //   * 时间: O(N*lgk)
 //   * 空间: O(k)
+// 二叉搜索树不好写 -_-
 func containsNearbyAlmostDuplicate1(nums []int, k int, t int) bool {
 	return containsNearbyAlmostDuplicate0(nums, k, t)
 }
@@ -129,7 +172,7 @@ func discretize(nums []int) ([]int, map[int]int, int) {
 		hash[nums[i]] = i
 	}
 	ordered, n := make([]int, len(hash)), 0
-	for k, _ := range hash {
+	for k := range hash {
 		ordered[n] = k
 		n++
 	}
@@ -158,13 +201,13 @@ func main() {
 			[]int{1, 0, 1, 1},
 			1, 2,
 		},
-		// false
-		{
-			nil, 0, 0,
-		},
 		{
 			[]int{1, 2, 1, 1},
 			1, 0,
+		},
+		// false
+		{
+			nil, 0, 0,
 		},
 		{
 			[]int{1, 5, 9, 1, 5, 9},
@@ -176,6 +219,7 @@ func main() {
 	for i, c := range realCase {
 		fmt.Println("## case", i)
 		// solve
+		fmt.Println(containsNearbyAlmostDuplicate2(c.nums, c.k, c.t))
 		fmt.Println(containsNearbyAlmostDuplicate0(c.nums, c.k, c.t))
 	}
 }
