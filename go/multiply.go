@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 )
 
@@ -10,6 +11,8 @@ import (
 
 //------------------------------------------------------------------------------
 // Solution
+//
+// bytes.Repeat([]byte, int) 可以用于快速申请初始化 byte 数组.
 //
 // 复杂度分析:
 //   * 时间: O(N*M)
@@ -21,46 +24,37 @@ func multiply(a string, b string) string {
 
 	N, M := len(a), len(b)
 
-	res, maxLen := make([]byte, N+M), 0
-	for i := 0; i < N+M; i++ {
-		res[i] = '0'
-	}
+	res, start := bytes.Repeat([]byte{'0'}, N+M), N+M-1
 	for i := N - 1; i >= 0; i-- {
-		p, carry := N-1-i, 0
-		for j := M - 1; j >= 0; j-- {
-			v := int(a[i]-'0')*int(b[j]-'0') + int(res[p]-'0') + carry
-			res[p] = byte(v%10 + '0')
-			carry = v / 10
-			p++
-		}
-		for carry > 0 && p < N+M {
+		p, carry := M+i, 0
+		for j := M - 1; j >= 0 || (carry > 0 && p >= 0); j-- {
 			v := int(res[p]-'0') + carry
+			if j >= 0 {
+				v += int(a[i]-'0') * int(b[j]-'0')
+			}
 			res[p] = byte(v%10 + '0')
 			carry = v / 10
-			p++
+			p--
 		}
-		if maxLen < p {
-			maxLen = p
+		if start > p+1 {
+			start = p + 1
 		}
 	}
-	for i := 0; i < maxLen/2; i++ {
-		res[i], res[maxLen-1-i] = res[maxLen-1-i], res[i]
-	}
-	return string(res[:maxLen])
+	return string(res[start:])
 }
 
 //------------------------------------------------------------------------------
 // main
 
 func main() {
-	cases := [][]int{
-		{},
+	cases := [][2]string{
+		{"123", "456"},
 	}
 
 	realCase := cases[0:]
 	for i, c := range realCase {
 		fmt.Println("## case", i)
 		// solve
-		fmt.Println(c)
+		fmt.Println(multiply(c[0], c[1]))
 	}
 }
