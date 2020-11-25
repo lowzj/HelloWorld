@@ -35,7 +35,8 @@ func generateMatrix(n int) [][]int {
 			res[i][j] = next
 			next++
 
-			if vi, vj := i+direct[d][0], j+direct[d][1]; vi >= end || vi < start || vj >= end || vj < start {
+			if vi, vj := i+direct[d][0], j+direct[d][1]; vi >= end ||
+				vi < start || vj >= end || vj < start {
 				d = (d + 1) % 4
 			}
 			i += direct[d][0]
