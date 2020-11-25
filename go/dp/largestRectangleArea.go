@@ -22,9 +22,69 @@ func largestRectangleArea(heights []int) int {
 
 //------------------------------------------------------------------------------
 // Solution 2
-// 单调栈
+//
+//       +--+
+//       |  +--+
+//    +--|  |  |
+//    |  |  |  +--+
+//  __|  |  |  |  |_
+//     0  1  2  3
+//
+// 以某根柱子的高度围成的矩形面积, 要求其周围的柱子都比它高, 否则, 这个矩形只包含自己.
+// 例如:
+//   * 以0号柱子高度: 可以跟1,2号围成一个最大矩形, 与3号柱子不行, 因为比3号高.
+//   * 以1号柱子高度: 只能自己玩, 最大矩形面积是其高度*1.
+// 所以要确定以柱子 H[i] 的高度围成的最大矩形, 就要找到其左右最近的比其小的柱子.
+//
+// 递增栈: 递增存储待计算的柱子的下标. 因为栈中是递增的, 即对于栈顶柱子, 左边比其小的柱子已确定,
+// 只要待入栈的柱子比栈顶低, 则栈顶柱子能围成的最大矩形就可以确定下来了, 此时就可以将其弹出.
+//
+// 复杂度分析:
+//   * 时间: O(N)
+//   * 空间: O(N)
 func largestRectangleArea2(heights []int) int {
-	return 0
+	N := len(heights)
+	if N == 0 {
+		return 0
+	}
+
+	st, p := make([]int, N+2), 0
+	push := func(v int) {
+		st[p] = v
+		p++
+	}
+	pop := func() int {
+		p--
+		return st[p]
+	}
+	top := func() int {
+		return st[p-1]
+	}
+
+	max := func(x, y int) int {
+		if x > y {
+			return x
+		}
+		return y
+	}
+
+	// add virtual elements to head and tail
+	get := func(i int) int {
+		if i == 0 || i == N+1 {
+			return 0
+		}
+		return heights[i-1]
+	}
+
+	res := 0
+	for i := 0; i < N+2; i++ {
+		for p > 0 && get(top()) > get(i) {
+			// pop() must before top()
+			res = max(get(pop())*(i-top()-1), res)
+		}
+		push(i)
+	}
+	return res
 }
 
 //------------------------------------------------------------------------------
@@ -115,6 +175,7 @@ func main() {
 	cases := [][]int{
 		{2, 1, 5, 6, 2, 3},
 		{4, 2, 0, 3, 2, 4, 3, 4},
+		{0},
 	}
 
 	realCase := cases[0:]
@@ -123,5 +184,6 @@ func main() {
 		// solve
 		fmt.Println(largestRectangleArea(c))
 		fmt.Println(largestRectangleArea0(c))
+		fmt.Println(largestRectangleArea2(c))
 	}
 }
